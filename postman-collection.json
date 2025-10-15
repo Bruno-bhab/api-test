@@ -1,0 +1,293 @@
+{
+  "info": {
+    "name": "API Node.js - JWT e CRUD Produtos",
+    "description": "Coleção completa para testar a API Node.js com autenticação JWT e CRUD de produtos.\n\n**Instruções:**\n1. Execute o login para obter o token\n2. O token será automaticamente salvo na variável `{{authToken}}`\n3. Use as demais requisições que já incluem o token automaticamente\n\n**Credenciais padrão:**\n- Username: admin\n- Password: admin123",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "authToken",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "🏠 Informações da API",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/",
+          "host": ["{{baseUrl}}"],
+          "path": [""]
+        },
+        "description": "Retorna informações gerais sobre a API, incluindo endpoints disponíveis."
+      },
+      "response": []
+    },
+    {
+      "name": "🔐 Autenticação",
+      "item": [
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Salvar token automaticamente",
+                  "if (pm.response.code === 200) {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.collectionVariables.set('authToken', responseJson.token);",
+                  "    console.log('Token salvo automaticamente!');",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"admin123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            },
+            "description": "Faz login e retorna um token JWT válido por 24 horas.\n\n**Credenciais padrão:**\n- Username: admin\n- Password: admin123"
+          },
+          "response": []
+        },
+        {
+          "name": "Verificar Token",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/verify",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "verify"]
+            },
+            "description": "Verifica se o token JWT atual é válido."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "📦 Produtos",
+      "item": [
+        {
+          "name": "Listar Todos os Produtos",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/products",
+              "host": ["{{baseUrl}}"],
+              "path": ["products"]
+            },
+            "description": "Lista todos os produtos cadastrados no sistema."
+          },
+          "response": []
+        },
+        {
+          "name": "Buscar Produto por ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/products/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["products", "1"]
+            },
+            "description": "Busca um produto específico pelo seu ID."
+          },
+          "response": []
+        },
+        {
+          "name": "Criar Produto",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Salvar ID do produto criado",
+                  "if (pm.response.code === 201) {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.collectionVariables.set('lastProductId', responseJson.data.id);",
+                  "    console.log('ID do produto criado:', responseJson.data.id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Smartphone XYZ\",\n  \"description\": \"Smartphone top de linha com 128GB de armazenamento\",\n  \"price\": 899.99,\n  \"stock\": 50\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/products",
+              "host": ["{{baseUrl}}"],
+              "path": ["products"]
+            },
+            "description": "Cria um novo produto no sistema.\n\n**Campos obrigatórios:**\n- name (string)\n- price (number)\n\n**Campos opcionais:**\n- description (string)\n- stock (integer, padrão: 0)"
+          },
+          "response": []
+        },
+        {
+          "name": "Atualizar Produto",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Smartphone XYZ Pro\",\n  \"description\": \"Smartphone top de linha com 256GB de armazenamento - Versão Pro\",\n  \"price\": 1199.99,\n  \"stock\": 30\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/products/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["products", "1"]
+            },
+            "description": "Atualiza um produto existente pelo seu ID."
+          },
+          "response": []
+        },
+        {
+          "name": "Deletar Produto",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/products/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["products", "1"]
+            },
+            "description": "Remove um produto do sistema pelo seu ID."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🧪 Testes Completos",
+      "item": [
+        {
+          "name": "Workflow Completo - Criar e Gerenciar Produto",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Notebook Gamer\",\n  \"description\": \"Notebook para jogos com RTX 4060\",\n  \"price\": 2499.99,\n  \"stock\": 10\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/products",
+              "host": ["{{baseUrl}}"],
+              "path": ["products"]
+            },
+            "description": "Exemplo de criação de produto para testar o workflow completo."
+          },
+          "response": []
+        },
+        {
+          "name": "Teste sem Token (deve dar erro 401)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/products",
+              "host": ["{{baseUrl}}"],
+              "path": ["products"]
+            },
+            "description": "Testa o acesso sem token de autenticação. Deve retornar erro 401."
+          },
+          "response": []
+        },
+        {
+          "name": "Teste com Token Inválido (deve dar erro 403)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer token-invalido-123"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/products",
+              "host": ["{{baseUrl}}"],
+              "path": ["products"]
+            },
+            "description": "Testa o acesso com token inválido. Deve retornar erro 403."
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

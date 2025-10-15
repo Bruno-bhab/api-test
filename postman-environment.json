@@ -1,0 +1,43 @@
+{
+  "id": "api-test-environment",
+  "name": "API Test Environment",
+  "values": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "description": "URL base da API (local)",
+      "enabled": true
+    },
+    {
+      "key": "baseUrlProduction",
+      "value": "https://seu-projeto.vercel.app",
+      "description": "URL base da API (produção na Vercel)",
+      "enabled": false
+    },
+    {
+      "key": "authToken",
+      "value": "",
+      "description": "Token JWT obtido após login (preenchido automaticamente)",
+      "enabled": true
+    },
+    {
+      "key": "username",
+      "value": "admin",
+      "description": "Username padrão para login",
+      "enabled": true
+    },
+    {
+      "key": "password",
+      "value": "admin123",
+      "description": "Password padrão para login",
+      "enabled": true
+    },
+    {
+      "key": "lastProductId",
+      "value": "",
+      "description": "ID do último produto criado (preenchido automaticamente)",
+      "enabled": true
+    }
+  ],
+  "_postman_variable_scope": "environment"
+}
