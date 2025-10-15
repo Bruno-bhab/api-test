@@ -173,8 +173,38 @@ Remove um produto.
 ### Pré-requisitos
 - Conta na [Vercel](https://vercel.com/)
 - Vercel CLI instalado: `npm i -g vercel`
+- Projeto no GitHub (recomendado)
 
-### Passos para Deploy
+### Método 1: Deploy via GitHub (Recomendado)
+
+1. **Suba o projeto para o GitHub**
+   ```bash
+   git init
+   git add .
+   git commit -m "Initial commit"
+   git branch -M main
+   git remote add origin https://github.com/seu-usuario/api-test.git
+   git push -u origin main
+   ```
+
+2. **Conecte no painel da Vercel**
+   - Acesse [vercel.com](https://vercel.com) e faça login
+   - Clique em "New Project"
+   - Selecione seu repositório `api-test`
+   - Clique em "Deploy"
+
+3. **Configure as variáveis de ambiente**
+   - Após o primeiro deploy, vá em "Settings" > "Environment Variables"
+   - Adicione: `JWT_SECRET` com valor: `seu-jwt-secret-muito-seguro-aqui-123456789`
+   - Marque para: "Production", "Preview" e "Development"
+   - Clique em "Save"
+
+4. **Redeploy**
+   - Vá em "Deployments"
+   - Clique nos 3 pontinhos do último deploy
+   - Clique em "Redeploy"
+
+### Método 2: Deploy via CLI
 
 1. **Faça login na Vercel**
    ```bash
@@ -186,19 +216,43 @@ Remove um produto.
    vercel
    ```
 
-3. **Configure as variáveis de ambiente**
-   No painel da Vercel, vá em Settings > Environment Variables e adicione:
-   - `JWT_SECRET`: seu-jwt-secret-muito-seguro-aqui
+3. **Configure a variável de ambiente via CLI**
+   ```bash
+   vercel env add JWT_SECRET
+   # Digite o valor quando solicitado: seu-jwt-secret-muito-seguro-aqui-123456789
+   # Selecione: Production, Preview, Development
+   ```
 
-4. **Redeploy após configurar as variáveis**
+4. **Redeploy para produção**
    ```bash
    vercel --prod
    ```
 
-### Estrutura na Vercel
-O projeto está configurado para funcionar tanto como aplicação tradicional quanto como funções serverless da Vercel:
-- Arquivo `vercel.json` configurado
-- Pasta `/api` com estrutura serverless alternativa
+### ⚠️ Importante: Configuração da Variável JWT_SECRET
+
+**A variável `JWT_SECRET` DEVE ser configurada no painel da Vercel**, não no código. Use um valor seguro como:
+```
+seu-jwt-secret-muito-seguro-aqui-123456789-$(date +%s)
+```
+
+### ✅ Verificação do Deploy
+
+Após o deploy, teste se está funcionando:
+```bash
+# Substitua YOUR_VERCEL_URL pela URL do seu deploy
+curl https://YOUR_VERCEL_URL.vercel.app/
+
+# Teste o login
+curl -X POST https://YOUR_VERCEL_URL.vercel.app/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"username":"admin","password":"admin123"}'
+```
+
+### 🔧 Estrutura na Vercel
+O projeto está configurado para funcionar como aplicação serverless:
+- `vercel.json` configurado para Node.js
+- Roteamento automático para `index.js`
+- Compatível com funções serverless da Vercel
 
 ## 🧪 Testando a API
 
